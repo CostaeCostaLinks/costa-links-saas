@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 11%;
+    --foreground: 0 0% 98%;
+    --card: 217 33% 17%;
+    --card-foreground: 0 0% 98%;
+    --popover: 217 33% 17%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 45 93% 58%;
+    --primary-foreground: 222 47% 11%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 45 93% 58%;
+    --accent-foreground: 222 47% 11%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 45 93% 58%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-serif;
+  }
+}
+
+@layer components {
+  .glow-effect {
+    position: relative;
+  }
+  
+  .glow-effect::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+    animation: glow 3s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .link-card {
+    @apply relative overflow-hidden rounded-full bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 transition-all duration-300 hover:bg-slate-700/40 hover:border-yellow-500/50 hover:shadow-lg hover:shadow-yellow-500/20;
+  }
+
+  .link-card-featured {
+    @apply bg-gradient-to-r from-yellow-500/10 to-transparent border-yellow-500/50 shadow-lg shadow-yellow-500/20;
+  }
+
+  .glass-card {
+    @apply bg-slate-800/30 backdrop-blur-md border border-slate-700/50 rounded-2xl;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-950 font-semibold rounded-full px-8 py-3 transition-all duration-300 hover:shadow-lg hover:shadow-yellow-500/50 hover:scale-105 active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-slate-800/60 backdrop-blur-sm border border-slate-700 text-foreground font-medium rounded-full px-8 py-3 transition-all duration-300 hover:bg-slate-700/60 hover:border-yellow-500/50 active:scale-95;
+  }
+
+  .input-field {
+    @apply bg-slate-800/40 backdrop-blur-sm border border-slate-700/50 rounded-xl px-4 py-3 text-foreground placeholder:text-slate-500 focus:border-yellow-500/50 focus:ring-2 focus:ring-yellow-500/20 transition-all duration-200;
+  }
+}
