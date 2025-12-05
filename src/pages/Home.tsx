@@ -149,7 +149,7 @@ export default function Home() {
                   {/* Perfil */}
                   <div className="flex flex-col items-center -mt-16 px-6 relative z-10">
                     <div className="w-28 h-28 rounded-full border-4 border-slate-950 shadow-xl bg-slate-800 bg-[url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=200&h=200')] bg-cover"></div>
-                    <h3 className="mt-3 font-bold text-white text-xl font-serif">Dr. Cleverson Costa</h3>
+                    <h3 className="mt-3 font-bold text-white text-xl font-serif">Dr. Costa & Costa</h3>
                     <p className="text-xs text-slate-400 mb-6 text-center">Neurociência • Vendas • Alta Performance</p>
 
                     {/* Botões do Mockup */}
