@@ -44,7 +44,7 @@ export function IconSelector({ selected, onSelect }: IconSelectorProps) {
       {Object.entries(iconMap).map(([key, Icon]) => (
         <button
           key={key}
-          type="button" // Importante para não submeter o formulário
+          type="button"
           onClick={() => onSelect(key)}
           className={`p-2 rounded-lg flex items-center justify-center transition-all ${
             selected === key 
@@ -60,8 +60,9 @@ export function IconSelector({ selected, onSelect }: IconSelectorProps) {
   );
 }
 
-// Função auxiliar para renderizar o ícone com segurança
+// --- É ESTA FUNÇÃO ABAIXO QUE ESTÁ FALTANDO E CAUSA O ERRO ---
 export function getIconComponent(iconName: string) {
+  // Se o ícone não existir no mapa, retorna o ícone de Link padrão
   const Icon = iconMap[iconName] || iconMap['link'];
   return Icon;
 }

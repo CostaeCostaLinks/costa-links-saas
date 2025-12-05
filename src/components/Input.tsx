@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, ...props }, ref) => {
+  ({ className, label, error, value, ...props }, ref) => {
     return (
       <div className="w-full">
         {label && (
@@ -17,6 +17,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <input
           ref={ref}
+          // CORREÇÃO: Garante que o valor nunca seja undefined (usa string vazia se for null/undefined)
+          value={value === undefined || value === null ? '' : value}
           className={cn(
             'input-field w-full',
             error && 'border-red-500 focus:ring-red-500/20',

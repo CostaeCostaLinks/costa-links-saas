@@ -5,11 +5,13 @@ export interface Profile {
   full_name?: string;
   avatar_url?: string;
   banner_url?: string;
+  display_banner?: boolean;
+  highlight_first_link?: boolean;
   bio?: string;
   
   // Cores Básicas
   background_color?: string;
-  text_color?: string; // Mantido como fallback
+  text_color?: string;
   
   // Cores Avançadas de Texto
   title_color?: string;
@@ -19,20 +21,24 @@ export interface Profile {
   button_color?: string;
   button_text_color?: string;
   button_border_color?: string;
-  icon_color?: string; // <--- NOVO CAMPO
+  button_border_width?: string;
+  icon_color?: string;
   
-  // Gradiente (Premium)
+  // Gradiente
   use_gradient?: boolean;
   gradient_from?: string;
   gradient_to?: string;
 
-  // Fontes
+  // Fontes e Tamanhos
   font_family?: string;
   title_font_family?: string;
+  font_size?: string;
+  title_font_size?: string;
+  bio_font_size?: string;
   
   created_at?: string;
 }
-// ... Mantenha Link e AuthUser iguais
+
 export interface Link {
   id: string;
   user_id: string;
@@ -49,4 +55,9 @@ export interface AuthUser {
   email: string;
   username: string;
   avatar?: string;
+  // ADICIONADO: Corrige o erro de propriedade inexistente
+  user_metadata?: {
+    full_name?: string;
+    [key: string]: any;
+  };
 }
