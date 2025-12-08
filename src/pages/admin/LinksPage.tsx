@@ -10,6 +10,7 @@ import Button from '@/components/Button';
 import { useAdminContext } from '@/layouts/AdminLayout';
 import { Link as RouterLink } from 'react-router-dom';
 import PreviewPhone from '@/components/PreviewPhone';
+import OnboardingProgress from '@/components/OnboardingProgress'; // <--- IMPORTADO AQUI
 
 export default function LinksPage() {
   const { user } = useAuth();
@@ -78,13 +79,16 @@ export default function LinksPage() {
     toast.success('Link copiado!');
   };
 
-  if (loading) return <div className="text-slate-400">Carregando...</div>;
+  if (loading) return <div className="text-slate-400 p-8 text-center">Carregando...</div>;
   const publicUrl = `${window.location.origin}/u/${username}`;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500 pb-20">
       
-      {/* 1. BANNER LINK PÚBLICO */}
+      {/* 1. BARRA DE PROGRESSO (ONBOARDING) - APARECE SÓ SE INCOMPLETO */}
+      <OnboardingProgress profile={profile} linkCount={links.length} />
+
+      {/* 2. BANNER LINK PÚBLICO */}
       <div className="bg-slate-900 rounded-2xl border border-slate-800 p-2 pl-4 flex flex-col sm:flex-row items-center justify-between shadow-2xl shadow-black/20 gap-4 sm:gap-0">
          <div className="flex items-center gap-4 min-w-0 w-full sm:w-auto">
              <div className="p-2.5 bg-yellow-500/10 rounded-full text-yellow-500 shrink-0"><LinkIcon className="w-5 h-5" /></div>
@@ -103,7 +107,6 @@ export default function LinksPage() {
         {/* COLUNA ESQUERDA: EDITOR */}
         <div className="space-y-6">
             
-            {/* 2. ABAS AJUSTADAS (Largura Total e Botões Iguais) */}
             <div className="flex p-1 bg-slate-900/50 rounded-xl w-full border border-slate-800/50">
                 <button className="flex-1 py-3 rounded-lg bg-yellow-500 text-slate-900 font-bold text-sm shadow-lg transition-all">
                     Links
@@ -139,7 +142,7 @@ export default function LinksPage() {
             </div>
         </div>
 
-        {/* 3. PREVIEW MAIS LARGO (350px) */}
+        {/* 3. PREVIEW */}
         <div className="hidden lg:block sticky top-8">
             <div className="mockup-phone border-8 border-slate-950 rounded-[3rem] overflow-hidden w-[350px] h-[700px] shadow-2xl bg-slate-950 relative ring-1 ring-slate-800 mx-auto">
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-b-xl z-20"></div>

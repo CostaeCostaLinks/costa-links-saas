@@ -1,13 +1,15 @@
 export interface Profile {
   id: string;
   username: string;
-  plan?: 'free' | 'premium';
+  plan: 'free' | 'premium' | 'admin';
   full_name?: string;
   avatar_url?: string;
   banner_url?: string;
   display_banner?: boolean;
   highlight_first_link?: boolean;
   bio?: string;
+  website?: string;
+  display_branding?: boolean;
   
   // Cores Básicas
   background_color?: string;

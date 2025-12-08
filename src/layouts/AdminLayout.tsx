@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Outlet, Link as RouterLink, useLocation, useNavigate, useOutletContext } from 'react-router-dom';
-import { LayoutList, Palette, Settings, LogOut, ExternalLink, Menu, X, Crown, Eye } from 'lucide-react';
+import { LayoutList, Palette, Settings, LogOut, ExternalLink, Menu, X, Crown, Eye, FileText } from 'lucide-react';
 import Logo from '@/components/Logo';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
@@ -15,6 +15,7 @@ type AdminContextType = {
   username: string;
   isPremium: boolean;
   triggerPreviewRefresh: () => void;
+  openPricingModal: () => void; // Mantive a função para abrir o modal
 };
 
 export default function AdminLayout() {
@@ -40,20 +41,32 @@ export default function AdminLayout() {
   const triggerPreviewRefresh = () => setRefreshKey((prev) => prev + 1);
   const handleLogout = async () => { await logout(); navigate('/login'); };
   
+  // Função que será passada para os filhos
+  const openPricingModal = () => setShowPricingModal(true);
+  
   const username = profile?.username || '';
-  const isPremium = profile?.plan === 'premium';
+  
+  // --- CORREÇÃO CIRÚRGICA AQUI ---
+  // Convertendo para string para o TypeScript não reclamar
+  const plan = (profile?.plan || 'free') as string;
+  const isPremium = plan === 'premium' || plan === 'admin' || plan === 'administrador';
+  const isAdmin = plan === 'admin' || plan === 'administrador';
+  // --------------------------------
+
   const previewUrl = `${window.location.origin}/u/${username}`;
 
+  // MENU COMPLETO RESTAURADO
   const menuItems = [
     { icon: LayoutList, label: 'Links', path: '/admin' },
     { icon: Palette, label: 'Aparência', path: '/admin/appearance' },
     { icon: Settings, label: 'Configurações', path: '/admin/settings' },
+    //...(isAdmin ? [{ icon: FileText, label: 'Blog', path: '/admin/blog' }] : []),
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col">
       
-      {/* Modal Pagamento (Mantido) */}
+      {/* MODAL DE PAGAMENTO ORIGINAL RESTAURADO */}
       {showPricingModal && (
         <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
           <div className="bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative border border-slate-800">
@@ -76,17 +89,14 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* --- HEADER SUPERIOR FIXO (Ajustado) --- */}
+      {/* HEADER ORIGINAL RESTAURADO */}
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
             
-            {/* 1. Logo (Esquerda Fixa) */}
             <div className="flex-shrink-0 w-48">
                 <Logo size="sm" />
             </div>
             
-            {/* 2. Menu Desktop (Centralizado Absoluto) */}
-            {/* Adicionei 'flex-1' e 'justify-center' para centralizar perfeitamente */}
             <nav className="hidden md:flex flex-1 justify-center items-center gap-2">
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -107,14 +117,12 @@ export default function AdminLayout() {
                 })}
             </nav>
 
-            {/* 3. Ações Direita (Fixa) */}
             <div className="flex items-center justify-end gap-3 w-48">
-                
                 <div className="hidden md:block">
                     {isPremium ? (
                         <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-yellow-500/30 rounded-full">
                             <Crown className="w-4 h-4 text-yellow-500" />
-                            <span className="text-xs font-bold text-yellow-500">PRO</span>
+                            <span className="text-xs font-bold text-yellow-500">{isAdmin ? 'ADMIN' : 'PRO'}</span>
                         </div>
                     ) : (
                         <button onClick={() => setShowPricingModal(true)} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-full text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700">
@@ -140,7 +148,6 @@ export default function AdminLayout() {
             </div>
         </div>
 
-        {/* Menu Mobile */}
         {isMobileMenuOpen && (
             <div className="md:hidden border-t border-slate-800 bg-slate-950 px-4 py-4 space-y-2 absolute w-full shadow-2xl">
                 {menuItems.map((item) => (
@@ -166,9 +173,8 @@ export default function AdminLayout() {
         )}
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8 animate-in fade-in duration-500">
-          <Outlet context={{ profile, username, isPremium, triggerPreviewRefresh }} /> 
+          <Outlet context={{ profile, username, isPremium, triggerPreviewRefresh, openPricingModal }} /> 
       </main>
 
     </div>

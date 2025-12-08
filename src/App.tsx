@@ -1,23 +1,38 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/hooks/useAuth';
 import { Toaster } from 'sonner';
-import Pricing from '@/pages/site/Pricing';
-import Templates from '@/pages/site/Templates';
-// Crie arquivos vazios para Features e Blog se não quiser fazer agora, ou aponte para Home
-// import Blog from '@/pages/site/Blog';
+import { AuthProvider, useAuth } from '@/hooks/useAuth';
+import TermsOfUse from '@/pages/TermsOfUse';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import CookieConsent from '@/components/CookieConsent'; // Importe o componente
 
-// Layouts
-import SiteLayout from '@/layouts/SiteLayout';
+// 1. Componentes Globais
+import ScrollToTop from '@/components/ScrollToTop';
+
+// 2. Layouts
+import PublicLayout from '@/layouts/PublicLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 
-// Pages
+// 3. Páginas Públicas
 import Home from '@/pages/Home';
-import Login from '@/pages/Login'; // Serve para Login e Register
+import Login from '@/pages/Login';
+import PublicProfile from '@/pages/PublicProfile';
+import Templates from '@/pages/site/Templates'; // Ajuste o caminho se tiver movido
+import Pricing from '@/pages/site/Pricing';     // Ajuste o caminho se tiver movido
+import Features from '@/pages/Features';
+import Help from '@/pages/Help'; // Importe a nova página
+import BlogPost from '@/pages/BlogPost'; 
+
+// 4. Páginas Administrativas
 import LinksPage from '@/pages/admin/LinksPage';
 import AppearancePage from '@/pages/admin/AppearancePage';
-import AnalyticsPage from '@/pages/admin/AnalyticsPage'; // NOVO
-import SettingsPage from '@/pages/admin/SettingsPage';   // NOVO
-import PublicProfile from '@/pages/PublicProfile';
+import SettingsPage from '@/pages/admin/SettingsPage';
+import BlogAdmin from '@/pages/admin/BlogAdmin';
+
+// Componente de Proteção de Rota
+function PrivateRoute({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  return user ? <>{children}</> : <Navigate to="/login" />;
+}
 
 function App() {
   return (
@@ -27,38 +42,54 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
+      <ScrollToTop />
+
       <AuthProvider>
+        <Toaster position="top-center" richColors theme="dark" />
+        <CookieConsent />
+        
         <Routes>
           
-          {/* SITE PÚBLICO */}
-          <Route path="/" element={<SiteLayout><Home /></SiteLayout>} />
+          {/* --- SITE PÚBLICO --- */}
+          <Route element={<PublicLayout />}>
+             <Route path="/" element={<Home />} />
+             <Route path="/pricing" element={<Pricing />} />
+             <Route path="/templates" element={<Templates />} />
+             <Route path="/features" element={<Features />} />
+             
+             {/* Rotas do Blog Público */}
+             <Route path="/ajuda" element={<Help />} />
+             <Route path="/blog/:slug" element={<BlogPost />} />
+          </Route>
 
-          <Route path="/" element={<SiteLayout><Home /></SiteLayout>} />
-<Route path="/pricing" element={<SiteLayout><Pricing /></SiteLayout>} />
-<Route path="/templates" element={<SiteLayout><Templates /></SiteLayout>} />
-
-// Redireciona links ainda não criados para Home ou Pricing temporariamente
-<Route path="/features" element={<SiteLayout><Home /></SiteLayout>} />
-<Route path="/blog" element={<SiteLayout><Home /></SiteLayout>} />
-          
-          {/* AUTH (Mesmo componente, lógica muda pela URL) */}
+          {/* --- AUTENTICAÇÃO --- */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Login />} />
 
-          {/* ADMIN */}
-          <Route path="/admin" element={<AdminLayout />}>
+          {/* --- BIO LINK --- */}
+          <Route path="/u/:username" element={<PublicProfile />} />
+
+          {/* --- ADMINISTRAÇÃO (AQUI ESTAVA O ERRO) --- */}
+          <Route path="/admin" element={
+            <PrivateRoute>
+              <AdminLayout />
+            </PrivateRoute>
+          }>
             <Route index element={<LinksPage />} />
             <Route path="appearance" element={<AppearancePage />} />
-            <Route path="analytics" element={<AnalyticsPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            
+            {/* A rota do Blog Admin TEM que estar aqui dentro */}
+            <Route path="blog" element={<BlogAdmin />} /> 
           </Route>
 
-          {/* BIO LINK */}
-          <Route path="/u/:username" element={<PublicProfile />} />
-          
+          {/* Rota Coringa */}
           <Route path="*" element={<Navigate to="/" replace />} />
+
+<Route path="/termos" element={<TermsOfUse />} />
+<Route path="/privacidade" element={<PrivacyPolicy />} />
+
         </Routes>
-        <Toaster position="top-right" theme="light" richColors />
       </AuthProvider>
     </BrowserRouter>
   );

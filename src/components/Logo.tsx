@@ -1,7 +1,7 @@
 import { Link2 } from 'lucide-react';
 
 interface LogoProps {
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 }
 
 export default function Logo({ size = 'md' }: LogoProps) {
@@ -12,9 +12,11 @@ export default function Logo({ size = 'md' }: LogoProps) {
   };
 
   const iconSizes = {
-    sm: 'w-5 h-5',
-    md: 'w-8 h-8',
-    lg: 'w-12 h-12',
+    xs: 'w-6 h-6', // Novo tamanho bem pequeno
+    sm: 'w-8 h-8', // ou o tamanho que já estava
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16',
+    xl: 'w-24 h-24'
   };
 
   return (
