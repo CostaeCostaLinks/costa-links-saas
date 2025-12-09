@@ -40,12 +40,10 @@ export default function AdminLayout() {
 
   const triggerPreviewRefresh = () => setRefreshKey((prev) => prev + 1);
   const handleLogout = async () => { await logout(); navigate('/login'); };
-  
   const openPricingModal = () => setShowPricingModal(true);
   
   const username = profile?.username || '';
   
-  // Lógica de Plano
   const plan = (profile?.plan || 'free') as string;
   const isPremium = plan === 'premium' || plan === 'admin' || plan === 'administrador';
   const isAdmin = plan === 'admin' || plan === 'administrador'; 
@@ -60,12 +58,13 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col">
+    // CORREÇÃO: Removemos 'h-screen' ou 'overflow-hidden' se houver, garantindo scroll
+    <div className="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col w-full">
       
-      {/* Modal Pagamento (Mantido) */}
+      {/* Modal Pagamento */}
       {showPricingModal && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
-          <div className="bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative border border-slate-800">
+        <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in overflow-y-auto">
+          <div className="bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative border border-slate-800 my-auto">
             <button onClick={() => setShowPricingModal(false)} className="absolute top-4 right-4 p-2 bg-slate-800 rounded-full hover:bg-slate-700"><X className="w-5 h-5 text-slate-400" /></button>
             <div className="p-8 text-center bg-slate-900 border-b border-slate-800">
               <div className="w-16 h-16 bg-yellow-500/10 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4"><Crown className="w-8 h-8" /></div>
@@ -89,12 +88,10 @@ export default function AdminLayout() {
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             
-            {/* Logo */}
             <div className="flex-shrink-0">
                 <Logo size="xs" />
             </div>
             
-            {/* Menu Desktop */}
             <nav className="hidden md:flex flex-1 justify-center items-center gap-2">
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -115,7 +112,6 @@ export default function AdminLayout() {
                 })}
             </nav>
 
-            {/* Ações Desktop */}
             <div className="hidden md:flex items-center justify-end gap-3 w-48">
                 {isPremium ? (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-yellow-500/30 rounded-full">
@@ -128,57 +124,54 @@ export default function AdminLayout() {
                     </button>
                 )}
 
-                <a href={previewUrl} target="_blank" className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full hover:bg-slate-800 text-white transition font-medium text-sm group">
-                    <Eye className="w-4 h-4 text-slate-400 group-hover:text-white" /> 
-                    <span>Ver</span>
-                </a>
+                {!isSettingsPage && (
+                   <a href={previewUrl} target="_blank" className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full hover:bg-slate-800 text-white transition font-medium text-sm group">
+                       <Eye className="w-4 h-4 text-slate-400 group-hover:text-white" /> 
+                       <span>Ver</span>
+                   </a>
+                )}
 
                 <button onClick={handleLogout} className="flex items-center gap-2 pl-4 border-l border-slate-800 ml-2 text-sm font-medium text-slate-400 hover:text-red-400 transition-colors">
                     <LogOut className="w-4 h-4" />
                 </button>
             </div>
 
-            {/* Botão Mobile (Sempre visível no celular) */}
+            {/* BOTÕES MOBILE */}
             <div className="flex md:hidden items-center gap-3">
-                 {/* Botão Assinar Mobile */}
                  {!isPremium && (
-                    <button onClick={() => setShowPricingModal(true)} className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-slate-900 rounded-full shadow-lg">
-                        <Crown className="w-4 h-4" />
+                    <button onClick={() => setShowPricingModal(true)} className="flex items-center justify-center w-9 h-9 bg-yellow-500 text-slate-900 rounded-full shadow-lg">
+                        <Crown className="w-5 h-5" />
                     </button>
                  )}
-
-                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-lg">
+                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-lg border border-slate-700">
                     {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
             </div>
         </div>
 
-        {/* MENU MOBILE EXPANDIDO (CORRIGIDO) */}
         {isMobileMenuOpen && (
-            <div className="md:hidden absolute top-16 left-0 w-full bg-slate-950 border-b border-slate-800 shadow-2xl animate-in slide-in-from-top-2 z-50">
+            <div className="md:hidden fixed inset-0 top-16 bg-slate-950 z-50 overflow-y-auto pb-20 animate-in slide-in-from-right-10">
                 <div className="p-4 space-y-2">
-                    {/* Links de Navegação */}
                     {menuItems.map((item) => (
                         <RouterLink 
                             key={item.path} 
                             to={item.path} 
                             onClick={() => setIsMobileMenuOpen(false)}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                                location.pathname === item.path ? 'bg-yellow-500 text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+                            className={`flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium transition-colors ${
+                                location.pathname === item.path ? 'bg-yellow-500 text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-white border border-slate-800'
                             }`}
                         >
                             <item.icon className="w-5 h-5" /> {item.label}
                         </RouterLink>
                     ))}
                     
-                    <div className="h-px bg-slate-800 my-2" />
+                    <div className="h-px bg-slate-800 my-4" />
                     
-                    {/* Ações Mobile */}
-                    <a href={previewUrl} target="_blank" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-900 hover:text-white transition-colors">
+                    <a href={previewUrl} target="_blank" className="flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium text-slate-300 hover:bg-slate-900 border border-slate-800">
                         <ExternalLink className="w-5 h-5 text-slate-500" /> Ver Meu Site
                     </a>
                     
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-slate-900 hover:text-red-300 transition-colors">
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-4 rounded-xl text-base font-medium text-red-400 hover:bg-slate-900 border border-slate-800 mt-4">
                         <LogOut className="w-5 h-5" /> Sair da Conta
                     </button>
                 </div>
@@ -186,8 +179,8 @@ export default function AdminLayout() {
         )}
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8 animate-in fade-in duration-500">
+      {/* Main Content - CORREÇÃO DE SCROLL MOBILE */}
+      <main className="flex-1 w-full p-4 pb-24 md:pb-8 md:p-8 overflow-y-auto overflow-x-hidden">
           <Outlet context={{ profile, username, isPremium, triggerPreviewRefresh, openPricingModal }} /> 
       </main>
 
