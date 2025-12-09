@@ -25,6 +25,7 @@ export default function AdminLayout() {
   const isSettingsPage = location.pathname === '/admin/settings';
 
   const [profile, setProfile] = useState<Profile | null>(null);
+  // O estado isMobileMenuOpen aqui controla o MENU DO ADMIN (não o do site público)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -40,6 +41,7 @@ export default function AdminLayout() {
 
   const triggerPreviewRefresh = () => setRefreshKey((prev) => prev + 1);
   const handleLogout = async () => { await logout(); navigate('/login'); };
+  
   const openPricingModal = () => setShowPricingModal(true);
   
   const username = profile?.username || '';
@@ -58,12 +60,11 @@ export default function AdminLayout() {
   ];
 
   return (
-    // CORREÇÃO: Removemos 'h-screen' ou 'overflow-hidden' se houver, garantindo scroll
     <div className="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col w-full">
       
       {/* Modal Pagamento */}
       {showPricingModal && (
-        <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in overflow-y-auto">
+        <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in overflow-y-auto">
           <div className="bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative border border-slate-800 my-auto">
             <button onClick={() => setShowPricingModal(false)} className="absolute top-4 right-4 p-2 bg-slate-800 rounded-full hover:bg-slate-700"><X className="w-5 h-5 text-slate-400" /></button>
             <div className="p-8 text-center bg-slate-900 border-b border-slate-800">
@@ -84,7 +85,7 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* HEADER SUPERIOR */}
+      {/* HEADER SUPERIOR (ADMIN) */}
       <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             
@@ -92,6 +93,7 @@ export default function AdminLayout() {
                 <Logo size="xs" />
             </div>
             
+            {/* Menu Desktop Centralizado */}
             <nav className="hidden md:flex flex-1 justify-center items-center gap-2">
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -112,6 +114,7 @@ export default function AdminLayout() {
                 })}
             </nav>
 
+            {/* Ações Desktop */}
             <div className="hidden md:flex items-center justify-end gap-3 w-48">
                 {isPremium ? (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-yellow-500/30 rounded-full">
@@ -136,19 +139,22 @@ export default function AdminLayout() {
                 </button>
             </div>
 
-            {/* BOTÕES MOBILE */}
+            {/* BOTÕES MOBILE (ADMIN) */}
             <div className="flex md:hidden items-center gap-3">
+                 {/* Botão Assinar Mobile */}
                  {!isPremium && (
                     <button onClick={() => setShowPricingModal(true)} className="flex items-center justify-center w-9 h-9 bg-yellow-500 text-slate-900 rounded-full shadow-lg">
                         <Crown className="w-5 h-5" />
                     </button>
                  )}
+                 {/* Menu Hambúrguer do ADMIN (Apenas para Links, Aparência, etc) */}
                  <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-lg border border-slate-700">
                     {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
             </div>
         </div>
 
+        {/* MENU MOBILE EXPANDIDO (ADMIN) */}
         {isMobileMenuOpen && (
             <div className="md:hidden fixed inset-0 top-16 bg-slate-950 z-50 overflow-y-auto pb-20 animate-in slide-in-from-right-10">
                 <div className="p-4 space-y-2">
@@ -179,7 +185,7 @@ export default function AdminLayout() {
         )}
       </header>
 
-      {/* Main Content - CORREÇÃO DE SCROLL MOBILE */}
+      {/* Main Content */}
       <main className="flex-1 w-full p-4 pb-24 md:pb-8 md:p-8 overflow-y-auto overflow-x-hidden">
           <Outlet context={{ profile, username, isPremium, triggerPreviewRefresh, openPricingModal }} /> 
       </main>
