@@ -15,7 +15,7 @@ type AdminContextType = {
   username: string;
   isPremium: boolean;
   triggerPreviewRefresh: () => void;
-  openPricingModal: () => void; // Mantive a função para abrir o modal
+  openPricingModal: () => void;
 };
 
 export default function AdminLayout() {
@@ -41,32 +41,28 @@ export default function AdminLayout() {
   const triggerPreviewRefresh = () => setRefreshKey((prev) => prev + 1);
   const handleLogout = async () => { await logout(); navigate('/login'); };
   
-  // Função que será passada para os filhos
   const openPricingModal = () => setShowPricingModal(true);
   
   const username = profile?.username || '';
   
-  // --- CORREÇÃO CIRÚRGICA AQUI ---
-  // Convertendo para string para o TypeScript não reclamar
+  // Lógica de Plano
   const plan = (profile?.plan || 'free') as string;
   const isPremium = plan === 'premium' || plan === 'admin' || plan === 'administrador';
-  const isAdmin = plan === 'admin' || plan === 'administrador';
-  // --------------------------------
-
+  const isAdmin = plan === 'admin' || plan === 'administrador'; 
+  
   const previewUrl = `${window.location.origin}/u/${username}`;
 
-  // MENU COMPLETO RESTAURADO
   const menuItems = [
     { icon: LayoutList, label: 'Links', path: '/admin' },
     { icon: Palette, label: 'Aparência', path: '/admin/appearance' },
     { icon: Settings, label: 'Configurações', path: '/admin/settings' },
-    //...(isAdmin ? [{ icon: FileText, label: 'Blog', path: '/admin/blog' }] : []),
+    ...(isAdmin ? [{ icon: FileText, label: 'Blog', path: '/admin/blog' }] : []),
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 font-sans text-slate-100 flex flex-col">
       
-      {/* MODAL DE PAGAMENTO ORIGINAL RESTAURADO */}
+      {/* Modal Pagamento (Mantido) */}
       {showPricingModal && (
         <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
           <div className="bg-slate-900 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden relative border border-slate-800">
@@ -89,14 +85,16 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* HEADER ORIGINAL RESTAURADO */}
-      <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+      {/* HEADER SUPERIOR */}
+      <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             
-            <div className="flex-shrink-0 w-48">
-                <Logo size="sm" />
+            {/* Logo */}
+            <div className="flex-shrink-0">
+                <Logo size="xs" />
             </div>
             
+            {/* Menu Desktop */}
             <nav className="hidden md:flex flex-1 justify-center items-center gap-2">
                 {menuItems.map((item) => {
                     const isActive = location.pathname === item.path;
@@ -104,7 +102,7 @@ export default function AdminLayout() {
                         <RouterLink 
                             key={item.path} 
                             to={item.path} 
-                            className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all ${
+                            className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
                                 isActive 
                                 ? 'bg-yellow-500 text-slate-900 shadow-lg shadow-yellow-500/20' 
                                 : 'text-slate-400 hover:text-white hover:bg-slate-800'
@@ -117,62 +115,78 @@ export default function AdminLayout() {
                 })}
             </nav>
 
-            <div className="flex items-center justify-end gap-3 w-48">
-                <div className="hidden md:block">
-                    {isPremium ? (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-yellow-500/30 rounded-full">
-                            <Crown className="w-4 h-4 text-yellow-500" />
-                            <span className="text-xs font-bold text-yellow-500">{isAdmin ? 'ADMIN' : 'PRO'}</span>
-                        </div>
-                    ) : (
-                        <button onClick={() => setShowPricingModal(true)} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-full text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700">
-                            <Crown className="w-4 h-4 text-yellow-500" /> Assinar
-                        </button>
-                    )}
-                </div>
-
-                {!isSettingsPage && (
-                   <a href={previewUrl} target="_blank" className="hidden md:flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full hover:bg-slate-800 text-white transition font-medium text-sm group">
-                       <Eye className="w-4 h-4 text-slate-400 group-hover:text-white" /> 
-                       <span>Ver</span>
-                   </a>
+            {/* Ações Desktop */}
+            <div className="hidden md:flex items-center justify-end gap-3 w-48">
+                {isPremium ? (
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-900 border border-yellow-500/30 rounded-full">
+                        <Crown className="w-4 h-4 text-yellow-500" />
+                        <span className="text-xs font-bold text-yellow-500">{isAdmin ? 'ADMIN' : 'PRO'}</span>
+                    </div>
+                ) : (
+                    <button onClick={() => setShowPricingModal(true)} className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-full text-xs font-bold hover:bg-slate-700 transition-all border border-slate-700">
+                        <Crown className="w-4 h-4 text-yellow-500" /> Assinar
+                    </button>
                 )}
 
-                <button onClick={handleLogout} className="hidden md:flex items-center gap-2 pl-4 border-l border-slate-800 ml-2 text-sm font-medium text-slate-400 hover:text-red-400 transition-colors">
-                    Sair <LogOut className="w-4 h-4" />
-                </button>
+                <a href={previewUrl} target="_blank" className="flex items-center gap-2 px-4 py-2 bg-slate-900 border border-slate-800 rounded-full hover:bg-slate-800 text-white transition font-medium text-sm group">
+                    <Eye className="w-4 h-4 text-slate-400 group-hover:text-white" /> 
+                    <span>Ver</span>
+                </a>
 
-                <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden p-2 text-slate-300 hover:text-white">
+                <button onClick={handleLogout} className="flex items-center gap-2 pl-4 border-l border-slate-800 ml-2 text-sm font-medium text-slate-400 hover:text-red-400 transition-colors">
+                    <LogOut className="w-4 h-4" />
+                </button>
+            </div>
+
+            {/* Botão Mobile (Sempre visível no celular) */}
+            <div className="flex md:hidden items-center gap-3">
+                 {/* Botão Assinar Mobile */}
+                 {!isPremium && (
+                    <button onClick={() => setShowPricingModal(true)} className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-slate-900 rounded-full shadow-lg">
+                        <Crown className="w-4 h-4" />
+                    </button>
+                 )}
+
+                 <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-lg">
                     {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
             </div>
         </div>
 
+        {/* MENU MOBILE EXPANDIDO (CORRIGIDO) */}
         {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-slate-800 bg-slate-950 px-4 py-4 space-y-2 absolute w-full shadow-2xl">
-                {menuItems.map((item) => (
-                    <RouterLink 
-                        key={item.path} 
-                        to={item.path} 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium ${
-                            location.pathname === item.path ? 'bg-yellow-500 text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
-                        }`}
-                    >
-                        <item.icon className="w-5 h-5" /> {item.label}
-                    </RouterLink>
-                ))}
-                <div className="h-px bg-slate-800 my-2" />
-                <a href={previewUrl} target="_blank" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-white">
-                    <ExternalLink className="w-5 h-5" /> Ver Meu Site
-                </a>
-                <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-slate-900">
-                    <LogOut className="w-5 h-5" /> Sair da Conta
-                </button>
+            <div className="md:hidden absolute top-16 left-0 w-full bg-slate-950 border-b border-slate-800 shadow-2xl animate-in slide-in-from-top-2 z-50">
+                <div className="p-4 space-y-2">
+                    {/* Links de Navegação */}
+                    {menuItems.map((item) => (
+                        <RouterLink 
+                            key={item.path} 
+                            to={item.path} 
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                                location.pathname === item.path ? 'bg-yellow-500 text-slate-900' : 'text-slate-400 hover:bg-slate-900 hover:text-white'
+                            }`}
+                        >
+                            <item.icon className="w-5 h-5" /> {item.label}
+                        </RouterLink>
+                    ))}
+                    
+                    <div className="h-px bg-slate-800 my-2" />
+                    
+                    {/* Ações Mobile */}
+                    <a href={previewUrl} target="_blank" className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-300 hover:bg-slate-900 hover:text-white transition-colors">
+                        <ExternalLink className="w-5 h-5 text-slate-500" /> Ver Meu Site
+                    </a>
+                    
+                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-slate-900 hover:text-red-300 transition-colors">
+                        <LogOut className="w-5 h-5" /> Sair da Conta
+                    </button>
+                </div>
             </div>
         )}
       </header>
 
+      {/* Main Content */}
       <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-8 animate-in fade-in duration-500">
           <Outlet context={{ profile, username, isPremium, triggerPreviewRefresh, openPricingModal }} /> 
       </main>

@@ -195,7 +195,7 @@ export default function AppearancePage() {
 
                 {/* Modal Galeria */}
                 {showGallery && (
-                    <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[9999] flex items-start justify-center p-4 pt-10 md:pt-20 bg-slate-950/90 backdrop-blur-md animate-in fade-in duration-300 overflow-y-auto">
                     <div className="bg-slate-900 border border-slate-700 w-full max-w-5xl h-[85vh] rounded-2xl flex flex-col overflow-hidden shadow-2xl">
                         <div className="p-4 border-b border-slate-800 flex justify-between items-center"><h2 className="text-xl font-bold text-white">Temas</h2><button onClick={() => setShowGallery(false)}><XCircle className="w-8 h-8 text-slate-400 hover:text-white" /></button></div>
                         <div className="p-4 flex gap-2 overflow-x-auto bg-slate-900">{CATEGORIES.map(cat => (<button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-4 py-1.5 rounded-full text-xs font-bold ${selectedCategory === cat ? 'bg-yellow-500 text-slate-900' : 'bg-slate-800 text-slate-300'}`}>{cat}</button>))}</div>
