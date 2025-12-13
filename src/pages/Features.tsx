@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle2, Copy, Download, MessageCircle, QrCode, Share2, Sparkles } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Copy, Download, MessageCircle, QrCode, Share2, Sparkles, BookOpenCheck, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function Features() {
@@ -82,7 +82,7 @@ export default function Features() {
           <p className="text-xl text-slate-400">Recursos poderosos para impulsionar sua presença digital, sem custo.</p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto items-start">
+        <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-7xl mx-auto items-start">
           
           {/* FERRAMENTA 1: WHATSAPP */}
           <div className="bg-slate-900/50 backdrop-blur-md border border-white/10 rounded-3xl p-8 hover:border-green-500/30 transition-all group">
@@ -170,6 +170,43 @@ export default function Features() {
                 <button onClick={checkBioScore} className="w-full bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-500/30 font-bold py-3 rounded-xl transition-all">
                     {checklist.filter(Boolean).length === 5 ? 'Tudo Pronto! Criar Conta' : 'Completar meu Perfil'}
                 </button>
+            </div>
+          </div>
+
+          {/* NOVA FERRAMENTA: WORKBOOK (CARD EM DESTAQUE) */}
+          <div className="bg-gradient-to-br from-green-900/40 to-green-950/40 backdrop-blur-md border border-green-500/30 rounded-3xl p-8 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+            {/* Efeito de brilho de fundo */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-500/30 transition-all duration-700"></div>
+
+            <div className="relative z-10">
+                <div className="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center mb-6 text-amber-500 group-hover:scale-110 transition-transform border border-amber-500/20">
+                    <BookOpenCheck className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-white mb-2">Mapeie suas Cicatrizes</h3>
+                <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+                    Uma ferramenta profunda de autoconhecimento. Descubra a raiz dos seus bloqueios e crie um plano de ação para sua reconstrução.
+                </p>
+                
+                <div className="space-y-3 mb-6">
+                    <div className="flex items-center gap-2 text-xs text-green-400">
+                        <CheckCircle2 className="w-4 h-4" /> <span>Identificação de padrões tóxicos</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-green-400">
+                        <CheckCircle2 className="w-4 h-4" /> <span>Relatório personalizado em PDF</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs text-green-400">
+                        <CheckCircle2 className="w-4 h-4" /> <span>100% Gratuito e Seguro</span>
+                    </div>
+                </div>
+
+                <a 
+                    href="https://mapa.costalinks.com.br" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-amber-900/20 hover:scale-105 active:scale-95"
+                >
+                    Acessar Ferramenta <ArrowRight className="w-4 h-4" />
+                </a>
             </div>
           </div>
 
